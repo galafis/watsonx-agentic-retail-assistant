@@ -40,12 +40,7 @@ class QualityScorer:
         actionability = self._score_actionability(response)
 
         # Weighted average
-        overall = (
-            relevance * 0.35
-            + completeness * 0.25
-            + specificity * 0.20
-            + actionability * 0.20
-        )
+        overall = relevance * 0.35 + completeness * 0.25 + specificity * 0.20 + actionability * 0.20
 
         result = {
             "overall_score": round(overall, 3),
@@ -130,8 +125,16 @@ class QualityScorer:
     def _score_actionability(response: str) -> float:
         """Score whether the response provides actionable information."""
         action_phrases = [
-            "you can", "please", "try", "visit", "click", "contact",
-            "here's how", "to do this", "steps", "follow",
+            "you can",
+            "please",
+            "try",
+            "visit",
+            "click",
+            "contact",
+            "here's how",
+            "to do this",
+            "steps",
+            "follow",
         ]
         lower = response.lower()
         matches = sum(1 for phrase in action_phrases if phrase in lower)

@@ -20,7 +20,8 @@ class ProductCatalog:
 
     def __init__(self, data_path: str | None = None) -> None:
         self._data_path = Path(
-            data_path or Path(__file__).parent.parent.parent / "data" / "sample_catalog" / "products.json"
+            data_path
+            or Path(__file__).parent.parent.parent / "data" / "sample_catalog" / "products.json"
         )
         self._products: list[dict[str, Any]] = []
         self._load_products()

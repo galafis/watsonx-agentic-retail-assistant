@@ -9,7 +9,6 @@ import pytest
 
 from src.tools.recommendation_engine import RecommendationEngine
 
-
 # ---------------------------------------------------------------------------
 # Sample catalog data
 # ---------------------------------------------------------------------------
@@ -70,6 +69,7 @@ _SAMPLE_PRODUCTS: list[dict[str, Any]] = [
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def engine() -> RecommendationEngine:
     """Create a RecommendationEngine with mocked config."""
@@ -105,11 +105,14 @@ def mock_catalog() -> MagicMock:
 # recommend_similar() - content-based
 # ---------------------------------------------------------------------------
 
+
 class TestRecommendSimilar:
     """Test content-based similar product recommendations."""
 
     def test_returns_similar_products(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_similar("PROD-1")
         assert len(results) > 0
@@ -119,32 +122,42 @@ class TestRecommendSimilar:
         assert result_ids & {"PROD-2", "PROD-5"}
 
     def test_nonexistent_product_returns_empty(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_similar("PROD-DOES-NOT-EXIST")
         assert results == []
 
     def test_respects_limit_parameter(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_similar("PROD-1", limit=2)
         assert len(results) <= 2
 
     def test_respects_max_recommendations_default(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_similar("PROD-1")
         assert len(results) <= 5
 
     def test_excludes_reference_product(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_similar("PROD-3")
         result_ids = [r["id"] for r in results]
         assert "PROD-3" not in result_ids
 
     def test_similar_category_ranked_higher(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_similar("PROD-1")
         if len(results) >= 2:
@@ -155,11 +168,13 @@ class TestRecommendSimilar:
 # Diversity factor
 # ---------------------------------------------------------------------------
 
+
 class TestDiversityFactor:
     """Test that diversity factor limits items per category."""
 
     def test_high_diversity_limits_same_category(
-        self, mock_catalog: MagicMock,
+        self,
+        mock_catalog: MagicMock,
     ) -> None:
         with patch("src.tools.recommendation_engine.settings") as mock_settings:
             mock_settings.tools_config = {
@@ -183,11 +198,14 @@ class TestDiversityFactor:
 # recommend_for_customer() - collaborative
 # ---------------------------------------------------------------------------
 
+
 class TestRecommendForCustomer:
     """Test customer-level recommendations with purchase history."""
 
     def test_with_purchase_history(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_for_customer(
             customer_id="CUST-001",
@@ -198,7 +216,9 @@ class TestRecommendForCustomer:
         assert "PROD-1" not in result_ids
 
     def test_no_history_returns_popular(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_for_customer(
             customer_id="CUST-NEW",
@@ -207,7 +227,9 @@ class TestRecommendForCustomer:
         assert len(results) > 0
 
     def test_none_history_returns_popular(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_for_customer(
             customer_id="CUST-NEW",
@@ -216,7 +238,9 @@ class TestRecommendForCustomer:
         assert len(results) > 0
 
     def test_excludes_already_purchased(
-        self, engine: RecommendationEngine, mock_catalog: MagicMock,
+        self,
+        engine: RecommendationEngine,
+        mock_catalog: MagicMock,
     ) -> None:
         results = engine.recommend_for_customer(
             customer_id="CUST-002",
@@ -230,6 +254,7 @@ class TestRecommendForCustomer:
 # ---------------------------------------------------------------------------
 # Content similarity scoring (static method)
 # ---------------------------------------------------------------------------
+
 
 class TestContentSimilarity:
     """Test the _content_similarity static method."""

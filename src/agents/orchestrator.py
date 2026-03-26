@@ -38,21 +38,62 @@ class AgentState(TypedDict):
 # Intent classification keywords
 _INTENT_KEYWORDS: dict[str, list[str]] = {
     "product": [
-        "product", "search", "find", "looking for", "show me", "browse",
-        "category", "catalog", "item", "compare", "price", "buy", "purchase",
+        "product",
+        "search",
+        "find",
+        "looking for",
+        "show me",
+        "browse",
+        "category",
+        "catalog",
+        "item",
+        "compare",
+        "price",
+        "buy",
+        "purchase",
     ],
     "order": [
-        "order", "status", "tracking", "track", "delivery", "shipped",
-        "return", "refund", "exchange", "cancel", "where is my",
+        "order",
+        "status",
+        "tracking",
+        "track",
+        "delivery",
+        "shipped",
+        "return",
+        "refund",
+        "exchange",
+        "cancel",
+        "where is my",
     ],
     "recommendation": [
-        "recommend", "suggest", "similar", "like this", "what should",
-        "best", "popular", "trending", "you think", "alternatives",
+        "recommend",
+        "suggest",
+        "similar",
+        "like this",
+        "what should",
+        "best",
+        "popular",
+        "trending",
+        "you think",
+        "alternatives",
     ],
     "support": [
-        "help", "support", "question", "how do", "how can", "policy",
-        "faq", "issue", "problem", "complaint", "contact", "payment",
-        "shipping", "warranty", "loyalty", "account",
+        "help",
+        "support",
+        "question",
+        "how do",
+        "how can",
+        "policy",
+        "faq",
+        "issue",
+        "problem",
+        "complaint",
+        "contact",
+        "payment",
+        "shipping",
+        "warranty",
+        "loyalty",
+        "account",
     ],
 }
 
@@ -78,9 +119,9 @@ class AgentOrchestrator:
         self._order_agent = OrderAgent()
         self._recommendation_agent = RecommendationAgent()
         self._support_agent = SupportAgent()
-        self._max_iterations: int = settings.agents_config.get(
-            "orchestrator", {}
-        ).get("max_iterations", 10)
+        self._max_iterations: int = settings.agents_config.get("orchestrator", {}).get(
+            "max_iterations", 10
+        )
 
     def run(self, user_message: str, history: list[dict[str, str]] | None = None) -> AgentState:
         """Execute the agentic workflow for a user message.
@@ -116,14 +157,14 @@ class AgentOrchestrator:
 
         # Node 1: Validate input
         state = self._validate_input(state)
-        if state["warnings"] and not state["response"]:
-            # Input blocked
-            if any("blocked" in w.lower() for w in state["warnings"]):
-                state["response"] = (
-                    "I'm sorry, but I can't process that request. "
-                    "Please rephrase your question and I'll be happy to help."
-                )
-                return state
+        if state["warnings"] and not state["response"] and any(
+            "blocked" in w.lower() for w in state["warnings"]
+        ):
+            state["response"] = (
+                "I'm sorry, but I can't process that request. "
+                "Please rephrase your question and I'll be happy to help."
+            )
+            return state
 
         # Node 2: Classify intent
         state = self._classify_intent(state)
@@ -252,7 +293,7 @@ class AgentOrchestrator:
                 "Please try again or contact our support team."
             )
             state["agent_used"] = "error_fallback"
-            state["warnings"].append(f"Agent error: {str(e)}")
+            state["warnings"].append(f"Agent error: {e!s}")
 
         return state
 

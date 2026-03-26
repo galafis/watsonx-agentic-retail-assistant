@@ -74,8 +74,7 @@ class OrderAgent:
             }
 
         items_list = ", ".join(
-            f"{item['name']} (x{item.get('quantity', 1)})"
-            for item in status.get("items", [])
+            f"{item['name']} (x{item.get('quantity', 1)})" for item in status.get("items", [])
         )
 
         response_text = (

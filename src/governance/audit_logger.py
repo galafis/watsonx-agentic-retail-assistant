@@ -61,7 +61,9 @@ class AuditLogger:
 
         self._interaction_count += 1
         timestamp = datetime.now(timezone.utc).isoformat()
-        entry_id = f"audit_{timestamp.replace(':', '-').replace('.', '-')}_{self._interaction_count}"
+        entry_id = (
+            f"audit_{timestamp.replace(':', '-').replace('.', '-')}_{self._interaction_count}"
+        )
 
         entry: dict[str, Any] = {
             "id": entry_id,

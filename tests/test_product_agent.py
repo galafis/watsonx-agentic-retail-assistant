@@ -8,10 +8,10 @@ import pytest
 
 from src.agents.product_agent import ProductAgent
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def agent() -> ProductAgent:
@@ -24,17 +24,32 @@ def agent() -> ProductAgent:
 # Sub-intent routing via handle()
 # ---------------------------------------------------------------------------
 
+
 class TestProductAgentRouting:
     """Verify handle() dispatches to the correct sub-handler based on keywords."""
 
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_compare_keyword_routes_to_comparison(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.compare_products.return_value = [
-            {"id": "PROD-1", "name": "Item A", "price": 29.99, "category": "Electronics", "tags": []},
-            {"id": "PROD-2", "name": "Item B", "price": 39.99, "category": "Electronics", "tags": []},
+            {
+                "id": "PROD-1",
+                "name": "Item A",
+                "price": 29.99,
+                "category": "Electronics",
+                "tags": [],
+            },
+            {
+                "id": "PROD-2",
+                "name": "Item B",
+                "price": 39.99,
+                "category": "Electronics",
+                "tags": [],
+            },
         ]
         agent = ProductAgent()
         result = agent.handle(
@@ -47,7 +62,9 @@ class TestProductAgentRouting:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_versus_keyword_routes_to_comparison(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.compare_products.return_value = [
             {"id": "P1", "name": "A", "price": 10.0, "category": "C", "tags": []},
@@ -63,11 +80,16 @@ class TestProductAgentRouting:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_detail_keyword_routes_to_details(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.get_product_details.return_value = {
-            "id": "PROD-1", "name": "Widget", "price": 19.99,
-            "category": "Gadgets", "description": "A useful widget",
+            "id": "PROD-1",
+            "name": "Widget",
+            "price": 19.99,
+            "category": "Gadgets",
+            "description": "A useful widget",
             "tags": ["gadget", "tool"],
         }
         agent = ProductAgent()
@@ -81,10 +103,17 @@ class TestProductAgentRouting:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_generic_query_routes_to_search(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = [
-            {"id": "P10", "name": "Laptop Stand", "price": 45.00, "description": "Adjustable stand"},
+            {
+                "id": "P10",
+                "name": "Laptop Stand",
+                "price": 45.00,
+                "description": "Adjustable stand",
+            },
         ]
         agent = ProductAgent()
         result = agent.handle("I need a laptop stand")
@@ -96,17 +125,30 @@ class TestProductAgentRouting:
 # Search handler (_handle_search)
 # ---------------------------------------------------------------------------
 
+
 class TestProductSearch:
     """Test _handle_search() calls catalog_search_tool and formats output."""
 
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_search_returns_formatted_results(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = [
-            {"id": "P1", "name": "Running Shoes", "price": 89.99, "description": "Comfortable running shoes"},
-            {"id": "P2", "name": "Trail Shoes", "price": 109.99, "description": "Durable trail shoes"},
+            {
+                "id": "P1",
+                "name": "Running Shoes",
+                "price": 89.99,
+                "description": "Comfortable running shoes",
+            },
+            {
+                "id": "P2",
+                "name": "Trail Shoes",
+                "price": 109.99,
+                "description": "Durable trail shoes",
+            },
         ]
         agent = ProductAgent()
         result = agent.handle("Find running shoes")
@@ -119,7 +161,9 @@ class TestProductSearch:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_search_empty_results(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = []
         agent = ProductAgent()
@@ -131,7 +175,9 @@ class TestProductSearch:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_search_passes_category_filter(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = []
         agent = ProductAgent()
@@ -147,7 +193,9 @@ class TestProductSearch:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_search_passes_price_filters(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = []
         agent = ProductAgent()
@@ -165,7 +213,9 @@ class TestProductSearch:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_search_single_result(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = [
             {"id": "P1", "name": "USB Hub", "price": 24.99, "description": "4-port USB hub"},
@@ -181,17 +231,23 @@ class TestProductSearch:
 # Details handler (_handle_details)
 # ---------------------------------------------------------------------------
 
+
 class TestProductDetails:
     """Test _handle_details() for single product lookup."""
 
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_details_with_valid_product_id(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.get_product_details.return_value = {
-            "id": "PROD-5", "name": "Smart Watch", "price": 299.99,
-            "category": "Electronics", "description": "Feature-rich smartwatch",
+            "id": "PROD-5",
+            "name": "Smart Watch",
+            "price": 299.99,
+            "category": "Electronics",
+            "description": "Feature-rich smartwatch",
             "tags": ["watch", "smart", "wearable"],
         }
         agent = ProductAgent()
@@ -208,7 +264,9 @@ class TestProductDetails:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_details_falls_back_to_search_when_no_id(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = []
         agent = ProductAgent()
@@ -220,7 +278,9 @@ class TestProductDetails:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_details_falls_back_when_product_not_found(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.get_product_details.return_value = None
         mock_catalog.search.return_value = []
@@ -236,13 +296,16 @@ class TestProductDetails:
 # Comparison handler (_handle_comparison)
 # ---------------------------------------------------------------------------
 
+
 class TestProductComparison:
     """Test _handle_comparison() with two products."""
 
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_comparison_with_two_products(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.compare_products.return_value = [
             {"id": "P1", "name": "Phone A", "price": 799.0, "category": "Phones", "tags": ["5G"]},
@@ -261,11 +324,13 @@ class TestProductComparison:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_comparison_falls_back_with_fewer_than_two_ids(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = []
         agent = ProductAgent()
-        result = agent.handle(
+        agent.handle(
             "Compare products",
             context={"product_ids": ["P1"]},
         )
@@ -274,17 +339,21 @@ class TestProductComparison:
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_comparison_falls_back_with_empty_ids(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.search.return_value = []
         agent = ProductAgent()
-        result = agent.handle("Compare products", context={})
+        agent.handle("Compare products", context={})
         mock_catalog.search.assert_called_once()
 
     @patch("src.agents.product_agent.catalog_search_tool")
     @patch("src.agents.product_agent.audit_logger")
     def test_comparison_calls_compare_products(
-        self, mock_audit: MagicMock, mock_catalog: MagicMock,
+        self,
+        mock_audit: MagicMock,
+        mock_catalog: MagicMock,
     ) -> None:
         mock_catalog.compare_products.return_value = [
             {"id": "A", "name": "A", "price": 10.0, "category": "X", "tags": []},

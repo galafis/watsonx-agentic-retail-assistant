@@ -176,7 +176,7 @@ class RecommendationEngine:
         category_counts: dict[str, int] = {}
         max_per_category = max(2, int(limit * (1.0 - self._diversity_factor)))
 
-        for score, product in scored:
+        for _score, product in scored:
             cat = product.get("category", "unknown")
             if category_counts.get(cat, 0) >= max_per_category:
                 continue

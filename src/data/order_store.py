@@ -21,7 +21,8 @@ class OrderStore:
 
     def __init__(self, data_path: str | None = None) -> None:
         self._data_path = Path(
-            data_path or Path(__file__).parent.parent.parent / "data" / "sample_orders" / "orders.json"
+            data_path
+            or Path(__file__).parent.parent.parent / "data" / "sample_orders" / "orders.json"
         )
         self._orders: list[dict[str, Any]] = []
         self._load_orders()

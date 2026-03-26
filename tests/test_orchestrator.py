@@ -2,17 +2,16 @@
 
 from __future__ import annotations
 
-from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.agents.orchestrator import AgentOrchestrator, AgentState, _INTENT_KEYWORDS
-
+from src.agents.orchestrator import _INTENT_KEYWORDS, AgentOrchestrator, AgentState
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _make_state(message: str) -> AgentState:
     """Build a blank AgentState with only *user_message* populated."""
@@ -46,6 +45,7 @@ def orchestrator() -> AgentOrchestrator:
 # Intent keyword registry
 # ---------------------------------------------------------------------------
 
+
 class TestIntentKeywords:
     """Validate that _INTENT_KEYWORDS covers all agent types."""
 
@@ -78,15 +78,24 @@ class TestIntentKeywords:
 # AgentState structure
 # ---------------------------------------------------------------------------
 
+
 class TestAgentState:
     """Ensure AgentState TypedDict contains every required field."""
 
     def test_all_required_keys_present(self) -> None:
         state = _make_state("test")
         required = {
-            "user_message", "intent", "confidence", "context",
-            "response", "tools_used", "agent_used", "quality_score",
-            "warnings", "needs_escalation", "history",
+            "user_message",
+            "intent",
+            "confidence",
+            "context",
+            "response",
+            "tools_used",
+            "agent_used",
+            "quality_score",
+            "warnings",
+            "needs_escalation",
+            "history",
         }
         assert required == set(state.keys())
 
@@ -104,12 +113,15 @@ class TestAgentState:
 # Intent classification
 # ---------------------------------------------------------------------------
 
+
 class TestIntentClassification:
     """Test keyword-based intent classification logic."""
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_product_queries(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
             "search for laptop",
@@ -124,7 +136,9 @@ class TestIntentClassification:
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_order_queries(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
             "track my order ORD-123",
@@ -138,7 +152,9 @@ class TestIntentClassification:
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_recommendation_queries(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
             "suggest something similar",
@@ -151,7 +167,9 @@ class TestIntentClassification:
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_support_queries(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
             "help me with my account",
@@ -164,21 +182,27 @@ class TestIntentClassification:
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_ambiguous_query_falls_back_to_support(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         state = orchestrator._classify_intent(_make_state("hello there"))
         assert state["intent"] == "support"
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_empty_message_falls_back_to_support(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         state = orchestrator._classify_intent(_make_state(""))
         assert state["intent"] == "support"
 
     @patch("src.agents.orchestrator.audit_logger")
     def test_confidence_is_normalized(
-        self, mock_audit: MagicMock, orchestrator: AgentOrchestrator,
+        self,
+        mock_audit: MagicMock,
+        orchestrator: AgentOrchestrator,
     ) -> None:
         state = orchestrator._classify_intent(
             _make_state("search for a product to buy"),
@@ -189,6 +213,7 @@ class TestIntentClassification:
 # ---------------------------------------------------------------------------
 # Entity extraction
 # ---------------------------------------------------------------------------
+
 
 class TestEntityExtraction:
     """Test order and product ID extraction from user messages."""
@@ -217,6 +242,7 @@ class TestEntityExtraction:
 # Full orchestrator workflow (mocked agents)
 # ---------------------------------------------------------------------------
 
+
 class TestOrchestratorWorkflow:
     """Integration tests for the end-to-end orchestrator pipeline."""
 
@@ -231,7 +257,9 @@ class TestOrchestratorWorkflow:
     ) -> None:
         mock_guardrails.validate_input.return_value = {"safe": True, "warnings": []}
         mock_guardrails.validate_output.return_value = {
-            "safe": True, "response": "Found products", "warnings": [],
+            "safe": True,
+            "response": "Found products",
+            "warnings": [],
         }
         mock_quality.score.return_value = {"overall_score": 0.85}
 
@@ -260,7 +288,9 @@ class TestOrchestratorWorkflow:
     ) -> None:
         mock_guardrails.validate_input.return_value = {"safe": True, "warnings": []}
         mock_guardrails.validate_output.return_value = {
-            "safe": True, "response": "Order shipped", "warnings": [],
+            "safe": True,
+            "response": "Order shipped",
+            "warnings": [],
         }
         mock_quality.score.return_value = {"overall_score": 0.9}
 
@@ -307,7 +337,9 @@ class TestOrchestratorWorkflow:
     ) -> None:
         mock_guardrails.validate_input.return_value = {"safe": True, "warnings": []}
         mock_guardrails.validate_output.return_value = {
-            "safe": True, "response": "Error fallback", "warnings": [],
+            "safe": True,
+            "response": "Error fallback",
+            "warnings": [],
         }
         mock_quality.score.return_value = {"overall_score": 0.2}
 
@@ -330,14 +362,18 @@ class TestOrchestratorWorkflow:
     ) -> None:
         mock_guardrails.validate_input.return_value = {"safe": True, "warnings": []}
         mock_guardrails.validate_output.return_value = {
-            "safe": True, "response": "ok", "warnings": [],
+            "safe": True,
+            "response": "ok",
+            "warnings": [],
         }
         mock_quality.score.return_value = {"overall_score": 0.5}
 
         orch = AgentOrchestrator()
         orch._support_agent = MagicMock()
         orch._support_agent.handle.return_value = {
-            "response": "ok", "tools_used": [], "agent": "support_agent",
+            "response": "ok",
+            "tools_used": [],
+            "agent": "support_agent",
         }
 
         history = [
@@ -358,14 +394,18 @@ class TestOrchestratorWorkflow:
     ) -> None:
         mock_guardrails.validate_input.return_value = {"safe": True, "warnings": []}
         mock_guardrails.validate_output.return_value = {
-            "safe": True, "response": "done", "warnings": [],
+            "safe": True,
+            "response": "done",
+            "warnings": [],
         }
         mock_quality.score.return_value = {"overall_score": 0.92}
 
         orch = AgentOrchestrator()
         orch._support_agent = MagicMock()
         orch._support_agent.handle.return_value = {
-            "response": "done", "tools_used": [], "agent": "support_agent",
+            "response": "done",
+            "tools_used": [],
+            "agent": "support_agent",
         }
 
         state = orch.run("help")

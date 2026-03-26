@@ -8,10 +8,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-
 # ---------------------------------------------------------------------------
 # App factory
 # ---------------------------------------------------------------------------
+
 
 def _create_test_app() -> FastAPI:
     """Create a FastAPI app mirroring the production route structure.
@@ -67,6 +67,7 @@ def _create_test_app() -> FastAPI:
 # Fixtures
 # ---------------------------------------------------------------------------
 
+
 @pytest.fixture()
 def client() -> TestClient:
     """Provide a FastAPI TestClient."""
@@ -77,6 +78,7 @@ def client() -> TestClient:
 # ---------------------------------------------------------------------------
 # Health endpoint
 # ---------------------------------------------------------------------------
+
 
 class TestHealthEndpoint:
     """Test the /health endpoint."""
@@ -100,12 +102,15 @@ class TestHealthEndpoint:
 # Query endpoint - valid requests
 # ---------------------------------------------------------------------------
 
+
 class TestQueryEndpoint:
     """Test the /api/v1/query endpoint."""
 
     @patch("src.agents.orchestrator.orchestrator")
     def test_valid_query_returns_200(
-        self, mock_orchestrator: MagicMock, client: TestClient,
+        self,
+        mock_orchestrator: MagicMock,
+        client: TestClient,
     ) -> None:
         mock_orchestrator.run.return_value = {
             "user_message": "find laptops",
@@ -129,7 +134,9 @@ class TestQueryEndpoint:
 
     @patch("src.agents.orchestrator.orchestrator")
     def test_valid_query_response_structure(
-        self, mock_orchestrator: MagicMock, client: TestClient,
+        self,
+        mock_orchestrator: MagicMock,
+        client: TestClient,
     ) -> None:
         mock_orchestrator.run.return_value = {
             "user_message": "find laptops",
@@ -159,7 +166,9 @@ class TestQueryEndpoint:
 
     @patch("src.agents.orchestrator.orchestrator")
     def test_query_with_session_and_history(
-        self, mock_orchestrator: MagicMock, client: TestClient,
+        self,
+        mock_orchestrator: MagicMock,
+        client: TestClient,
     ) -> None:
         mock_orchestrator.run.return_value = {
             "user_message": "help",
@@ -190,6 +199,7 @@ class TestQueryEndpoint:
 # ---------------------------------------------------------------------------
 # Query endpoint - validation errors
 # ---------------------------------------------------------------------------
+
 
 class TestQueryValidation:
     """Test that invalid requests return proper error codes."""

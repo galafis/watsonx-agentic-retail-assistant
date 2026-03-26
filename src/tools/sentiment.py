@@ -12,16 +12,53 @@ logger = structlog.get_logger(__name__)
 
 # Simple keyword-based sentiment lexicon
 _POSITIVE_WORDS = {
-    "great", "excellent", "amazing", "love", "wonderful", "perfect", "fantastic",
-    "awesome", "happy", "pleased", "satisfied", "thank", "thanks", "good", "best",
-    "helpful", "appreciate", "recommend", "outstanding", "superb",
+    "great",
+    "excellent",
+    "amazing",
+    "love",
+    "wonderful",
+    "perfect",
+    "fantastic",
+    "awesome",
+    "happy",
+    "pleased",
+    "satisfied",
+    "thank",
+    "thanks",
+    "good",
+    "best",
+    "helpful",
+    "appreciate",
+    "recommend",
+    "outstanding",
+    "superb",
 }
 
 _NEGATIVE_WORDS = {
-    "terrible", "awful", "horrible", "hate", "worst", "angry", "furious",
-    "disappointed", "frustrated", "annoyed", "broken", "defective", "scam",
-    "unacceptable", "ridiculous", "outrageous", "disgusting", "pathetic",
-    "incompetent", "useless", "garbage", "trash", "never", "complaint",
+    "terrible",
+    "awful",
+    "horrible",
+    "hate",
+    "worst",
+    "angry",
+    "furious",
+    "disappointed",
+    "frustrated",
+    "annoyed",
+    "broken",
+    "defective",
+    "scam",
+    "unacceptable",
+    "ridiculous",
+    "outrageous",
+    "disgusting",
+    "pathetic",
+    "incompetent",
+    "useless",
+    "garbage",
+    "trash",
+    "never",
+    "complaint",
 }
 
 
@@ -35,9 +72,17 @@ class SentimentAnalyzer:
     def __init__(self) -> None:
         tools_cfg = settings.tools_config.get("sentiment", {})
         self._negative_threshold: float = tools_cfg.get("negative_threshold", -0.3)
-        self._escalation_keywords: list[str] = tools_cfg.get("escalation_keywords", [
-            "manager", "supervisor", "complaint", "lawyer", "sue", "unacceptable",
-        ])
+        self._escalation_keywords: list[str] = tools_cfg.get(
+            "escalation_keywords",
+            [
+                "manager",
+                "supervisor",
+                "complaint",
+                "lawyer",
+                "sue",
+                "unacceptable",
+            ],
+        )
 
     def analyze(self, text: str) -> dict[str, Any]:
         """Analyze sentiment of a customer message.
@@ -99,10 +144,7 @@ class SentimentAnalyzer:
                 return True
 
         # Check sentiment threshold
-        if sentiment_score < self._negative_threshold:
-            return True
-
-        return False
+        return sentiment_score < self._negative_threshold
 
 
 # Module-level singleton

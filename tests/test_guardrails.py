@@ -8,10 +8,10 @@ import pytest
 
 from src.governance.guardrails import Guardrails
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
+
 
 @pytest.fixture()
 def guardrails() -> Guardrails:
@@ -38,6 +38,7 @@ def guardrails() -> Guardrails:
 # ---------------------------------------------------------------------------
 # Input validation - safe text
 # ---------------------------------------------------------------------------
+
 
 class TestValidateInputSafe:
     """Test that normal user messages pass input validation."""
@@ -70,6 +71,7 @@ class TestValidateInputSafe:
 # Input validation - prompt injection blocking
 # ---------------------------------------------------------------------------
 
+
 class TestValidateInputBlocked:
     """Test that prompt injection patterns are blocked."""
 
@@ -100,6 +102,7 @@ class TestValidateInputBlocked:
 # ---------------------------------------------------------------------------
 # PII detection
 # ---------------------------------------------------------------------------
+
 
 class TestPIIDetection:
     """Test PII detection in output validation: SSN, credit card, email."""
@@ -138,6 +141,7 @@ class TestPIIDetection:
 # Output validation - normal responses
 # ---------------------------------------------------------------------------
 
+
 class TestValidateOutputNormal:
     """Test that normal responses pass output validation."""
 
@@ -155,6 +159,7 @@ class TestValidateOutputNormal:
 # ---------------------------------------------------------------------------
 # Output validation - oversized responses
 # ---------------------------------------------------------------------------
+
 
 class TestValidateOutputTruncation:
     """Test that oversized responses are truncated."""
@@ -176,6 +181,7 @@ class TestValidateOutputTruncation:
 # ---------------------------------------------------------------------------
 # Price tolerance checking
 # ---------------------------------------------------------------------------
+
 
 class TestPriceValidation:
     """Test validate_price for pricing accuracy."""
@@ -204,6 +210,7 @@ class TestPriceValidation:
 # ---------------------------------------------------------------------------
 # Recommendation safety
 # ---------------------------------------------------------------------------
+
 
 class TestRecommendationSafety:
     """Test recommendation safety checks."""
