@@ -1,0 +1,68 @@
+# Watsonx Agentic Retail Assistant Configuration
+
+watsonx:
+  generation:
+    model_id: "ibm/granite-3-8b-instruct"
+    parameters:
+      max_new_tokens: 1024
+      temperature: 0.3
+      top_p: 0.9
+      top_k: 50
+      repetition_penalty: 1.1
+      stop_sequences: ["\n\nHuman:", "\n\nUser:"]
+  embedding:
+    model_id: "ibm/slate-125m-english-rtrvr"
+    truncate_input_tokens: 512
+
+agents:
+  orchestrator:
+    max_iterations: 10
+    intent_confidence_threshold: 0.7
+  product:
+    search_top_k: 5
+    similarity_threshold: 0.4
+  order:
+    max_return_days: 30
+  recommendation:
+    max_recommendations: 5
+    diversity_factor: 0.3
+  support:
+    escalation_sentiment_threshold: -0.5
+    faq_confidence_threshold: 0.6
+
+tools:
+  catalog_search:
+    hybrid_alpha: 0.7
+    vector_top_k: 10
+    keyword_top_k: 10
+  recommendation_engine:
+    content_weight: 0.6
+    collaborative_weight: 0.4
+  sentiment:
+    negative_threshold: -0.3
+    escalation_keywords:
+      - "manager"
+      - "supervisor"
+      - "complaint"
+      - "lawyer"
+      - "sue"
+      - "unacceptable"
+
+governance:
+  enabled: true
+  log_prompts: true
+  log_responses: true
+  log_tool_calls: true
+  track_quality: true
+  log_path: "./logs/governance"
+  guardrails:
+    max_response_length: 2000
+    blocked_patterns:
+      - "(?i)ignore previous instructions"
+      - "(?i)system prompt"
+      - "(?i)you are now"
+    pii_patterns:
+      - "\\b\\d{3}-\\d{2}-\\d{4}\\b"
+      - "\\b\\d{16}\\b"
+      - "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Z|a-z]{2,}\\b"
+    price_tolerance: 0.01
