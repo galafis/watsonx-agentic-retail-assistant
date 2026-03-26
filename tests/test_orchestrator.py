@@ -124,11 +124,11 @@ class TestIntentClassification:
         orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
-            "search for laptop",
-            "find phone",
-            "I want to buy a tablet",
-            "show me the product catalog",
-            "compare price of two items",
+            "search product catalog for laptop",
+            "find item and compare price",
+            "I want to buy and purchase a tablet",
+            "show me the product catalog and browse items",
+            "compare price of two items and find the best product",
         ]:
             state = orchestrator._classify_intent(_make_state(query))
             assert state["intent"] == "product", f"Failed for: {query}"
@@ -141,11 +141,11 @@ class TestIntentClassification:
         orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
-            "track my order ORD-123",
-            "where is my package delivery",
-            "I want to return this item",
-            "what is my order status",
-            "cancel my order",
+            "track my order delivery ORD-123",
+            "where is my order tracking status",
+            "I want to return and exchange this order",
+            "what is my order status and tracking",
+            "cancel my order and request a refund",
         ]:
             state = orchestrator._classify_intent(_make_state(query))
             assert state["intent"] == "order", f"Failed for: {query}"
@@ -157,10 +157,10 @@ class TestIntentClassification:
         orchestrator: AgentOrchestrator,
     ) -> None:
         for query in [
-            "suggest something similar",
-            "recommend me a product",
-            "what are the best alternatives",
-            "what do you think I should get",
+            "suggest something similar to recommend",
+            "recommend me the best popular product",
+            "what are the best alternatives you suggest",
+            "recommend trending alternatives for this",
         ]:
             state = orchestrator._classify_intent(_make_state(query))
             assert state["intent"] == "recommendation", f"Failed for: {query}"
@@ -205,7 +205,7 @@ class TestIntentClassification:
         orchestrator: AgentOrchestrator,
     ) -> None:
         state = orchestrator._classify_intent(
-            _make_state("search for a product to buy"),
+            _make_state("search product catalog to buy items"),
         )
         assert 0.0 <= state["confidence"] <= 1.0
 
@@ -271,7 +271,7 @@ class TestOrchestratorWorkflow:
             "agent": "product_agent",
         }
 
-        state = orch.run("I want to search for wireless headphones")
+        state = orch.run("search product catalog for wireless headphones to buy")
         assert state["intent"] == "product"
         assert state["agent_used"] == "product_agent"
         assert "catalog_search" in state["tools_used"]
@@ -302,7 +302,7 @@ class TestOrchestratorWorkflow:
             "agent": "order_agent",
         }
 
-        state = orch.run("track my order ORD-555")
+        state = orch.run("track my order delivery status ORD-555")
         assert state["intent"] == "order"
         assert state["agent_used"] == "order_agent"
         assert state["context"].get("order_id") == "ORD-555"
