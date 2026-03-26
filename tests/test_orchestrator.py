@@ -33,10 +33,19 @@ def _make_state(message: str) -> AgentState:
 @pytest.fixture()
 def orchestrator() -> AgentOrchestrator:
     """Create an orchestrator with governance singletons mocked out."""
+    mock_settings = MagicMock()
+    mock_settings.agents_config = {
+        "orchestrator": {"intent_confidence_threshold": 0.1},
+        "product": {},
+        "order": {},
+        "recommendation": {},
+        "support": {},
+    }
     with (
         patch("src.agents.orchestrator.guardrails"),
         patch("src.agents.orchestrator.audit_logger"),
         patch("src.agents.orchestrator.quality_scorer"),
+        patch("src.agents.orchestrator.settings", mock_settings),
     ):
         return AgentOrchestrator()
 
